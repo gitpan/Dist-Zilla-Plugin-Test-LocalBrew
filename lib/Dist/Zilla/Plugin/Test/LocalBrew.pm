@@ -1,7 +1,7 @@
 ## no critic (RequireUseStrict)
 package Dist::Zilla::Plugin::Test::LocalBrew;
 {
-  $Dist::Zilla::Plugin::Test::LocalBrew::VERSION = '0.03';
+  $Dist::Zilla::Plugin::Test::LocalBrew::VERSION = '0.04';
 }
 
 use File::Spec;
@@ -19,6 +19,24 @@ has brews => (
     default => sub { [] },
 );
 
+has notest_deps => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+);
+
+has nobrew => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+);
+
+sub should_test_deps {
+    my ( $self ) = @_;
+
+    return !$self->notest_deps;
+}
+
 sub mvp_multivalue_args {
     qw/brews/
 }
@@ -34,6 +52,13 @@ use File::Spec;
 use File::Temp;
 use Test::More;
 
+sub is_dist_root {
+    my ( @path ) = @_;
+
+    return -e File::Spec->catfile(@path, 'Makefile.PL') ||
+           -e File::Spec->catfile(@path, 'Build.PL');
+}
+
 delete @ENV{qw/AUTHOR_TESTING RELEASE_TESTING/};
 
 unless($ENV{'PERLBREW_ROOT'}) {
@@ -41,7 +66,7 @@ unless($ENV{'PERLBREW_ROOT'}) {
     exit;
 }
 
-my $brew = q[{{$brew}}];
+my $brew = q[{{$brew || ''}}];
 
 my $cpanm_path = qx(which cpanm 2>/dev/null);
 unless($cpanm_path) {
@@ -78,28 +103,50 @@ foreach my $line (@lines) {
     }
 }
 
-$ENV{'PATH'} = join(':', @ENV{qw/PERLBREW_PATH PATH_WITHOUT_PERLBREW/});
+my $pristine_path = qx(perlbrew display-pristine-path);
+chomp $pristine_path;
+$ENV{'PATH'} = join(':', $ENV{'PERLBREW_PATH'}, $pristine_path);
 
 plan tests => 1;
 
 my $tmpdir = File::Temp->newdir;
 
 my $pid = fork;
-if($pid) {
-    unless(defined $pid) {
-        fail "Forking failed!";
-        exit 1;
-    }
+if(!defined $pid) {
+    fail "Forking failed!";
+    exit 1;
+} elsif($pid) {
     waitpid $pid, 0;
     ok !$?, "cpanm should successfully install your dist with no issues";
 } else {
     close STDOUT;
     close STDERR;
 
-    chdir File::Spec->catdir($FindBin::Bin,
-        File::Spec->updir, File::Spec->updir); # exit test directory
+    my @path = File::Spec->splitdir($FindBin::Bin);
 
-    exec 'perl', $cpanm_path, '-L', $tmpdir->dirname, '.';
+    while(@path && !is_dist_root(@path)) {
+        pop @path;
+    }
+    unless(@path) {
+        die "Unable to find dist root\n";
+    }
+    chdir File::Spec->catdir(@path); # exit test directory
+
+    {{
+        unless($should_test_deps) {
+            return <<'END_PERL';
+    system 'perl', $cpanm_path, '--notest', '--installdeps', '-L', $tmpdir->dirname, '.';
+    if($?) {
+        exit($? >> 8);
+    }
+END_PERL
+        }
+        return '';
+    }}
+
+    delete $ENV{'PERL5LIB'};
+    system 'perl', $cpanm_path, '-L', $tmpdir->dirname, '.';
+    exit($? >> 8);
 }
 TEMPLATE
 
@@ -116,7 +163,18 @@ sub gather_files {
         $self->add_file(Dist::Zilla::File::InMemory->new(
             name    => "xt/release/localbrew-$brew.t",
             content => $self->fill_in_string($template, {
-                brew => $brew,
+                brew             => $brew,
+                should_test_deps => $self->should_test_deps,
+            }),
+        ));
+    }
+
+    if($self->nobrew) {
+        $self->add_file(Dist::Zilla::File::InMemory->new(
+            name    => "xt/release/system-localbrew.t",
+            content => $self->fill_in_string($template, {
+                brew             => undef,
+                should_test_deps => $self->should_test_deps,
             }),
         ));
     }
@@ -135,7 +193,7 @@ Dist::Zilla::Plugin::Test::LocalBrew - Verify that your distribution tests well 
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
@@ -159,6 +217,14 @@ prerequisites are included correctly.
 
 A list of perlbrew environments to build and test in.
 
+=head2 notest_deps
+
+If this flag is set, don't test dependency modules.
+
+=head2 nobrew
+
+If this flag is set, test against the system perl as well.
+
 =head1 ISSUES
 
 =over
@@ -178,6 +244,8 @@ L<Dist::Zilla>, L<App::perlbrew>, L<App::cpanminus>, L<local::lib>
 =item mvp_multivalue_args
 
 =item gather_files
+
+=item should_test_deps
 
 =back
 

@@ -1,7 +1,7 @@
 ## no critic (RequireUseStrict)
 package Dist::Zilla::Plugin::LocalBrew;
 {
-  $Dist::Zilla::Plugin::LocalBrew::VERSION = '0.03';
+  $Dist::Zilla::Plugin::LocalBrew::VERSION = '0.04';
 }
 
 ## use critic (RequireUseStrict)
@@ -28,7 +28,7 @@ Dist::Zilla::Plugin::LocalBrew - DEPRECATED - Use Test::LocalBrew instead
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
