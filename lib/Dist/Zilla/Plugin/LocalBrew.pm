@@ -1,7 +1,7 @@
 ## no critic (RequireUseStrict)
 package Dist::Zilla::Plugin::LocalBrew;
 {
-  $Dist::Zilla::Plugin::LocalBrew::VERSION = '0.04';
+  $Dist::Zilla::Plugin::LocalBrew::VERSION = '0.05';
 }
 
 ## use critic (RequireUseStrict)
@@ -28,7 +28,7 @@ Dist::Zilla::Plugin::LocalBrew - DEPRECATED - Use Test::LocalBrew instead
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 SYNOPSIS
 
@@ -41,7 +41,7 @@ Rob Hoelz <rob@hoelz.ro>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Rob Hoelz.
+This software is copyright (c) 2013 by Rob Hoelz.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
