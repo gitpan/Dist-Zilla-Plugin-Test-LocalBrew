@@ -34,7 +34,7 @@ unless($ENV{'PERLBREW_ROOT'}) {
     exit;
 }
 
-my $brew = q[pristine-5.10];
+my $brew = q[pristine-5.18];
 
 my $cpanm_path = qx(which cpanm 2>/dev/null);
 unless($cpanm_path) {

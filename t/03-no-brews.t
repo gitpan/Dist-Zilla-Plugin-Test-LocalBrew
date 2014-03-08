@@ -4,7 +4,7 @@ use lib 'lib';
 
 use Cwd qw(getcwd);
 use Test::Exception;
-use Test::More tests => 2;
+use Test::More;
 use Test::DZil;
 
 sub run_tests {
@@ -39,3 +39,6 @@ my $wd = getcwd;
 run_tests 'LocalBrew';
 chdir $wd;
 run_tests 'Test::LocalBrew';
+chdir $wd;
+
+done_testing;

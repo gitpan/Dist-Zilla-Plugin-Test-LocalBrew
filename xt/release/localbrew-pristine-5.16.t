@@ -27,7 +27,7 @@ sub is_dist_root {
            -e File::Spec->catfile(@path, 'Build.PL');
 }
 
-delete @ENV{qw/AUTHOR_TESTING RELEASE_TESTING/};
+delete @ENV{qw/AUTHOR_TESTING RELEASE_TESTING PERL5LIB/};
 
 unless($ENV{'PERLBREW_ROOT'}) {
     plan skip_all => "Environment variable 'PERLBREW_ROOT' not found";
@@ -88,6 +88,7 @@ if(!defined $pid) {
     waitpid $pid, 0;
     ok !$?, "cpanm should successfully install your dist with no issues" or copy_log_file($tmphome->dirname);
 } else {
+    close STDIN;
     close STDOUT;
     close STDERR;
 
@@ -106,7 +107,6 @@ if(!defined $pid) {
 
     
 
-    delete $ENV{'PERL5LIB'};
     system 'perl', $cpanm_path, '-L', $tmpdir->dirname, '.';
     exit($? >> 8);
 }

@@ -1,9 +1,6 @@
 ## no critic (RequireUseStrict)
 package Dist::Zilla::Plugin::Test::LocalBrew;
-{
-  $Dist::Zilla::Plugin::Test::LocalBrew::VERSION = '0.05';
-}
-
+$Dist::Zilla::Plugin::Test::LocalBrew::VERSION = '0.06';
 use File::Spec;
 use File::Temp qw(tempdir);
 
@@ -71,7 +68,7 @@ sub is_dist_root {
            -e File::Spec->catfile(@path, 'Build.PL');
 }
 
-delete @ENV{qw/AUTHOR_TESTING RELEASE_TESTING/};
+delete @ENV{qw/AUTHOR_TESTING RELEASE_TESTING PERL5LIB/};
 
 unless($ENV{'PERLBREW_ROOT'}) {
     plan skip_all => "Environment variable 'PERLBREW_ROOT' not found";
@@ -132,6 +129,7 @@ if(!defined $pid) {
     waitpid $pid, 0;
     ok !$?, "cpanm should successfully install your dist with no issues" or copy_log_file($tmphome->dirname);
 } else {
+    close STDIN;
     close STDOUT;
     close STDERR;
 
@@ -160,7 +158,6 @@ END_PERL
         return '';
     }}
 
-    delete $ENV{'PERL5LIB'};
     system 'perl', $cpanm_path, '-L', $tmpdir->dirname, '.';
     exit($? >> 8);
 }
@@ -199,9 +196,9 @@ sub gather_files {
 no Moose;
 1;
 
-
-
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -209,7 +206,7 @@ Dist::Zilla::Plugin::Test::LocalBrew - Verify that your distribution tests well 
 
 =head1 VERSION
 
-version 0.05
+version 0.06
 
 =head1 SYNOPSIS
 
@@ -288,7 +285,6 @@ patch to an existing test-file that illustrates the bug or desired
 feature.
 
 =cut
-
 
 __END__
 

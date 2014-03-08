@@ -1,9 +1,6 @@
 ## no critic (RequireUseStrict)
 package Dist::Zilla::Plugin::LocalBrew;
-{
-  $Dist::Zilla::Plugin::LocalBrew::VERSION = '0.05';
-}
-
+$Dist::Zilla::Plugin::LocalBrew::VERSION = '0.06';
 ## use critic (RequireUseStrict)
 use Moose;
 
@@ -18,9 +15,9 @@ __PACKAGE__->meta->make_immutable;
 
 1;
 
-
-
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -28,7 +25,7 @@ Dist::Zilla::Plugin::LocalBrew - DEPRECATED - Use Test::LocalBrew instead
 
 =head1 VERSION
 
-version 0.05
+version 0.06
 
 =head1 SYNOPSIS
 
@@ -56,7 +53,6 @@ patch to an existing test-file that illustrates the bug or desired
 feature.
 
 =cut
-
 
 __END__
 

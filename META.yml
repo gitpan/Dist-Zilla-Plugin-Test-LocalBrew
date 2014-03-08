@@ -3,13 +3,17 @@ abstract: 'Verify that your distribution tests well in a fresh perlbrew'
 author:
   - 'Rob Hoelz <rob@hoelz.ro>'
 build_requires:
+  File::Spec: 0
+  IO::Handle: 0
+  IPC::Open3: 0
   Module::Build: 0.3601
   TAP::Harness: 0
   Test::Deep: 0
+  Test::More: 0
 configure_requires:
   Module::Build: 0.3601
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.300028, CPAN::Meta::Converter version 2.120921'
+generated_by: 'Dist::Zilla version 5.013, CPAN::Meta::Converter version 2.133380'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -21,4 +25,4 @@ resources:
   bugtracker: https://github.com/hoelzro/dist-zilla-plugin-test-localbrew/issues
   homepage: https://github.com/hoelzro/dist-zilla-plugin-test-localbrew
   repository: https://github.com/hoelzro/dist-zilla-plugin-test-localbrew.git
-version: 0.05
+version: 0.06
