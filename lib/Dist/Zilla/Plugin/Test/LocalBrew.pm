@@ -1,6 +1,6 @@
 ## no critic (RequireUseStrict)
 package Dist::Zilla::Plugin::Test::LocalBrew;
-$Dist::Zilla::Plugin::Test::LocalBrew::VERSION = '0.06';
+$Dist::Zilla::Plugin::Test::LocalBrew::VERSION = '0.07';
 use File::Spec;
 use File::Temp qw(tempdir);
 
@@ -206,7 +206,7 @@ Dist::Zilla::Plugin::Test::LocalBrew - Verify that your distribution tests well 
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 
@@ -270,7 +270,7 @@ Rob Hoelz <rob@hoelz.ro>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Rob Hoelz.
+This software is copyright (c) 2014 by Rob Hoelz.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
